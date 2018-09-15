@@ -1,9 +1,7 @@
-import cv2
-import math
-
+import cv2, os, math
 
 def getImageAbsorbence(imgName):
-    img = cv2.imread("12.jpg")
+    img = cv2.imread("Pictures/"+imgName)
     height = img.shape[0]
     width = img.shape[1]
 
@@ -27,10 +25,13 @@ def getImageAbsorbence(imgName):
     absorbence = math.log10(i/i0)
     return absorbence
 
-imgNames = []
+imgNames = os.listdir('Pictures/.')
+print(imgNames)
 calibration = {}
 
-for img in range(1, len(imgNames)+1):
-    conc = input("Concentration of sample", img)
-    abs = getImageAbsorbence(img)
-    calibration[abs] = conc
+for img in range(0, len(imgNames)):
+    conc = input("Concentration of sample "+imgNames[img] + ": ")
+    absorb = getImageAbsorbence(imgNames[img])
+    calibration[absorb] = conc
+
+print(calibration)
