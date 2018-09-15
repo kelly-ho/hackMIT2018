@@ -1,4 +1,4 @@
-import cv2, os, math
+import cv2, os, math, numpy, scipy.stats
 
 def getImageAbsorbence(imgName):
     img = cv2.imread("Pictures/"+imgName)
@@ -35,3 +35,8 @@ for img in range(0, len(imgNames)):
     calibration[absorb] = conc
 
 print(calibration)
+
+x = numpy.array(calibration.keys())
+y = numpy.array(calibration.values())
+
+slope, intercept, r_value, p_value, std_err = scipy.stats.linregress(x,y)
