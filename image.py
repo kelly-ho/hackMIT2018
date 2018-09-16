@@ -1,7 +1,7 @@
-import cv2, os, math, scipy.stats
+import cv2, os, math, scipy.stats, pyqtgraph as plt
 
 def getImageAbsorbence(imgName, i0):
-    img = cv2.imread("Pictures/"+imgName)
+    img = cv2.imread(imgName)
     height = img.shape[0]
     width = img.shape[1]
 
@@ -42,7 +42,6 @@ for i,a in enumerate(imgNames):
 waterIndex = int(input("Water image: "))
 waterFile = imgNames[waterIndex]
 imgNames.remove(imgNames[waterIndex])
-print(imgNames)
 
 absorbs = []
 concens = []
@@ -52,12 +51,13 @@ i0 = getI0(waterFile)
 for img in range(0, len(imgNames)):
     concen = float(input("Concentration of sample "+imgNames[img] + ": "))
     concens.append(concen)
-    absorbs.append(getImageAbsorbence(imgNames[img], i0))
+    absorbs.append(getImageAbsorbence("Pictures/"+imgNames[img], i0))
 
-slope, intercept, r_value, p_value, std_err = scipy.stats.linregress(absorbs, concens)
-print("slope:", slope)
+slope, intercept, r_value, p_value, std_err = scipy.stats.linregress(concens, absorbs)
+print("\nslope:", slope)
 print("intercept", intercept)
-
-unknown = float(input("Unknown sample's absorbance: "))
-unknownConc = (unknown - intercept) / slope
-print(unknownConc)
+unknownImgName = "Unknown/"+os.listdir("Unknown/.")[0]
+unknownAbsorb = getImageAbsorbence(unknownImgName, i0)
+print("Unknown sample's absorbance:", unknownAbsorb)
+unknownConc = (unknownAbsorb - intercept) / slope
+print("\nUNKNOWN SAMPLE'S CONCENTRATION:", unknownConc)
